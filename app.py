@@ -107,7 +107,7 @@ fig_pie.update_layout(uniformtext_minsize=12, uniformtext_mode='hide',template='
 
 app = dash.Dash(
     external_stylesheets=[dbc.themes.CYBORG],
-    #suppress_callback_exceptions=True,
+    title='VOSTPT:DASHBOARD',update_title=None,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
 
@@ -130,7 +130,7 @@ app.layout = dbc.Container(
                             "opacity": "unset",
                         }
                     ),
-                    width={"size": 6},
+                    xs=12, sm=12, md=6, lg=6, xl=6,
                 ),
                 # SUBTITLE (RIGHT) TITLE COLUMN 
                 dbc.Col(
@@ -144,7 +144,7 @@ app.layout = dbc.Container(
                             "opacity": "unset",
                         }
                     ),
-                    width={"size": 6},
+                    xs=12, sm=12, md=6, lg=6, xl=6,
                 ),
                 
             ],
@@ -164,7 +164,7 @@ app.layout = dbc.Container(
                             "opacity": "unset",
                         }
                     ),
-                    width={"size": 12},
+                    xs=12, sm=12, md=12, lg=12, xl=12,
                 ),
             ),
         # THIRD ROW 
@@ -181,14 +181,19 @@ app.layout = dbc.Container(
                         start_date=date.today(),
                         end_date=date.today()
                     ),
-                width={"size": 2},
+                xs=12, sm=12, md=2, lg=2, xl=2,
                 ),
+                html.Hr(),
+            ],
+        ),
                 # TOGGLE SWITCH FOR FIRES
+        dbc.Row(
+            [
                 dbc.Col(
                     
-                        html.P("Apenas Incêndios"),
+                        html.H5("Apenas Incêndios",style={"color":"white"}),
                     
-                width={"size": 1}
+                xs=6, sm=6, md=2, lg=2, xl=2,
                 ),
                 dbc.Col(
                     daq.ToggleSwitch(
@@ -200,16 +205,20 @@ app.layout = dbc.Container(
                             
                             
                         ), 
-                    width={"size": 1}
+                    xs=6, sm=6, md=1, lg=1, xl=1,
 
                     ),
+            ],
+        ),
+        dbc.Row(
+            [
                 dbc.Col(
                         html.Div(
                             [
-                            html.P("Apenas FMA"),
-                            ],style = {'width': '100%', 'display': 'flex', 'align-items': 'center', 'justify-content': 'right'},
+                            html.H5("Apenas FMA",style={"color":"white"}),
+                            ],
                             ),
-                width={"size": 1}
+                xs=6, sm=6, md=2, lg=2, xl=2,
                 ),
                 
                 dbc.Col(
@@ -222,45 +231,52 @@ app.layout = dbc.Container(
                             
                             
                         ), 
-                    width={"size": 1}
+                    xs=6, sm=6, md=1, lg=1, xl=1,
 
                     ),
-            ],
+                ],
         ),
+            
+        
         # FOURTH ROW 
         dbc.Row(
             [
                 
                         dbc.Col(
                             dcc.Loading(id='loader_pie', 
-                                type='cube',
+                                type='dot',
                                 color='#FFFFFF',
                                 children=[
                                     dcc.Graph(id="graph_pie", figure=fig_pie), # PIE CHART
                                 ],
                             ),
-                            width={"size": 6}
+                            xs=12, sm=12, md=12, lg=12, xl=12,
                         ),
-
+            ],
+        ),
+        dbc.Row(
+                [
                         dbc.Col(
                             dcc.Loading(id='loader_bar', 
-                                type='cube',
+                                type='dot',
                                 color='#FFFFFF',
                                 children=[
                                     dcc.Graph(id="graph_bar", figure=fig_bar), # BAR CHART
                                     ],
                             ),
-                            width={"size": 6}
+                            xs=12, sm=12, md=12, lg=12, xl=12,
                         ), 
+                ],
+        ),
                     
                 
-            ],
-            className="g-0",
-        ),
+            
+        
+        
         # FIFTH ROW 
         dbc.Row(
             [
-                dbc.Col(dcc.Graph(id="graph_line", figure=fig_line),width={"size": 12}) # LINE GRAPH
+                dbc.Col(dcc.Graph(id="graph_line", figure=fig_line),xs=12, sm=12, md=12, lg=12, xl=12) # LINE GRAPH
             ],
             className="g-0",
         ),
@@ -388,13 +404,14 @@ def new_graphs(start_date,end_date,fma_switch,fire_switch):
     # Define pie, bar, and line graphs 
     fig_pie = px.pie(df_in_pie,names='natureza',values='sadoId',color='natureza',hole=0.5,color_discrete_sequence=colors)
     fig_bar = px.bar(df_in_bar,x='date',y='sadoId', color='natureza',color_discrete_sequence=colors,template='plotly_dark')
-    fig_line = px.line(df_half,x='dateTime.sec',y='sadoId',color_discrete_sequence=colors,template='plotly_dark')
+    fig_line = px.line(df_half,x='dateTime.sec',y='sadoId',color_discrete_sequence=colors,template='plotly_dark',labels={"dateTime.sec":"DATA","sadoId":"Ocorrências"})
 
     # Styling for graphs
 
     fig_pie.update_traces(textposition='inside', textinfo='value+percent+label')
     fig_pie.update_layout(uniformtext_minsize=12, uniformtext_mode='hide',template='plotly_dark')
     fig_line.update_xaxes(nticks=5)
+    fig_bar.update_xaxes(nticks=5)
 
 
     # ------------------------------
@@ -410,7 +427,7 @@ def new_graphs(start_date,end_date,fma_switch,fire_switch):
 # ------------------------------
 
 if __name__ == "__main__":
-    app.run_server(debug=False, port=8081)
+    app.run_server(debug=True, port=8081)
 
 
 # ------------------------------
