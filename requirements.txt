@@ -14,3 +14,6 @@ plotly == 5.5.0
 
 # dashboard_2022/app.py: 9
 requests == 2.26.0
+
+# dashboard_2022/app.py: 31,194,216
+dash_daq == 0.5.0
