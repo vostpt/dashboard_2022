@@ -58,6 +58,8 @@ f"&all={selector}" \
 
 
 
+
+
 # ------------------------------
 #      GET INITIAL DATA
 # ------------------------------
@@ -79,7 +81,6 @@ json = response.json()
 # Use print(json) in order to check the  structure of your json fle
 df_in = pd.json_normalize(json,'data')
 
-print(df_in.info())
 
 # Create day column by extracting the day from the date column
 df_in['day'] = pd.DatetimeIndex(df_in['date']).day
@@ -209,7 +210,12 @@ app.layout = dbc.Container(
             
         dbc.Row(
             [
-                
+            dbc.Col(html.H5("Ocorrências últimos 30m: ",style={"color":"white"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+            dbc.Col(html.H5(id='dispatch',style={"color":"yellow"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+            dbc.Col(html.H5(id='arrival',style={"color":"orange"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+            dbc.Col(html.H5(id='ongoing',style={"color":"red"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+            dbc.Col(html.H5(id='resolution',style={"color":"green"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+            dbc.Col(html.H5(id='conclusion',style={"color":"gray"}),xs=12, sm=12, md=12, lg=12, xl=2,),      
             ],
         ),
         # FOURTH ROW 
@@ -268,6 +274,11 @@ app.layout = dbc.Container(
 @app.callback(
 
     Output(component_id="summary",component_property="children"),
+    Output(component_id="dispatch",component_property="children"),
+    Output(component_id="arrival",component_property="children"),
+    Output(component_id="ongoing",component_property="children"),
+    Output(component_id="resolution",component_property="children"),
+    Output(component_id="conclusion",component_property="children"),
     Output(component_id="graph_pie",component_property="figure"),
     Output(component_id="graph_bar",component_property="figure"),
     Output(component_id="graph_line",component_property="figure"),
@@ -352,6 +363,7 @@ def new_graphs(start_date,end_date,fma_switch,fire_switch):
     # Use print(json) in order to check the  structure of your json fle
     df_dash = pd.json_normalize(json_dash,'data')
 
+
     # Create day column by extracting the day from the date column
     df_dash['day'] = pd.DatetimeIndex(df_dash['date']).day.astype(str)
     # Convert seconds to Date Time format 
@@ -394,15 +406,92 @@ def new_graphs(start_date,end_date,fma_switch,fire_switch):
     text = "Total de Ocorrências no Período Escolhido: "
     total_records = text + total_records_num
 
+    # OnGoing Events 
+
+    # Define Start Date to Today
+    end_date = dt.datetime.today().strftime('%Y-%m-%d')
+    start_date = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
+    # Define Initial button status
+    selector = 1
+    # Define Initial Limit 
+    limit = 100000
+
+    # Define Initial URLs
+    url_bar_today = f"https://api.fogos.pt/v2/incidents/search" \
+    f"?before={end_date}" \
+    f"&after={start_date}" \
+    f"&limit={limit}" \
+    f"&all={selector}" \
+
+    # ------------------------------
+    #      GET  DATA
+    # ------------------------------
+
+    # Get response from URL 
+    response_today = requests.get(url_bar_today)
+
+    # Get the json content from the response
+    json_today = response.json()
 
 
+    # ------------------------------
+    #        DATA TREATMENT
+    # ------------------------------
+
+    # Create Pandas Dataframe from the normalized json response
+    # that begins at "data" level. 
+    # Depending on your json file this may vary. 
+    # Use print(json) in order to check the  structure of your json fle
+    df_today = pd.json_normalize(json_today,'data')
+
+
+    # Create day column by extracting the day from the date column
+    df_today['day'] = pd.DatetimeIndex(df_in['date']).day
+    # Convert seconds to DateTime format 
+    df_today['dateTime.sec'] = pd.to_datetime(df_in['dateTime.sec'], unit='s')
+
+    last_ts = df_today['dateTime.sec'].iloc[-1]
+
+    first_ts = last_ts - pd.Timedelta(30, 'minutes')
+
+    df_today_30m = df_today[df_today["dateTime.sec"] >= first_ts]
+
+    em_curso = df_today_30m['status'].value_counts()
+
+    print(em_curso)
+
+    
+
+
+    dispatch_val = str(em_curso['Despacho de 1º Alerta'])
+    ongoing_val = str(em_curso['Em Curso'])
+    arrival_val = str(em_curso['Chegada ao TO'])
+    resolution_val = str(em_curso['Em Resolução'])
+    conclusion_val =str(em_curso['Conclusão'])
+
+    # Build Strings 
+
+    dispatch_txt = "Despacho 1ª Alerta: "
+    ongoing_txt = "Em Curso: "
+    arrival_txt = "Em Chegada ao TO: "
+    resolution_txt = "Em Resolução: "
+    conclusion_txt = "Em Conclusão: "
+
+    dispatch_var = dispatch_txt + dispatch_val
+    arrival_var = arrival_txt + arrival_val
+    ongoing_var = ongoing_txt + ongoing_val
+    resolution_var = resolution_txt + resolution_val
+    conclusion_var = conclusion_txt + conclusion_val
+
+
+  
 
     # ------------------------------
     #        RETURN CALLBACK
     # ------------------------------
 
 
-    return total_records,fig_pie, fig_bar, fig_line
+    return total_records, dispatch_var, arrival_var, ongoing_var, resolution_var, conclusion_var, fig_pie, fig_bar, fig_line
 
 
 # ------------------------------
