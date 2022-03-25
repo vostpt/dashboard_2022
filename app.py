@@ -33,6 +33,10 @@ from dash import Input, Output, dcc, html
 import dash_bootstrap_components as dbc
 
 
+import brand
+
+
+
 # ------------------------------
 #       INITIAL VARIABLES 
 # ------------------------------
@@ -75,6 +79,8 @@ json = response.json()
 # Use print(json) in order to check the  structure of your json fle
 df_in = pd.json_normalize(json,'data')
 
+print(df_in.info())
+
 # Create day column by extracting the day from the date column
 df_in['day'] = pd.DatetimeIndex(df_in['date']).day
 # Convert seconds to DateTime format 
@@ -116,60 +122,17 @@ app = dash.Dash(
 # ------------------------------
 app.layout = dbc.Container(
     [
-        # First Row
-        dbc.Row(
-            [
-                # Ttitle Column 
-                dbc.Col(
-                    html.H4("VOST PORTUGAL",
-                        style={
-                            "borderWidth": "1vh",
-                            "width": "100%",
-                            "background-color":"#353535",
-                            "borderColor": "#353535",
-                            "opacity": "unset",
-                        }
-                    ),
-                    xs=12, sm=12, md=6, lg=6, xl=6,
-                ),
-                # SUBTITLE (RIGHT) TITLE COLUMN 
-                dbc.Col(
-                    html.H4("Dashboard Operacional",
-                        style={
-                            "borderWidth": "1vh",
-                            "width": "100%",
-                            "background-color":"#BDBBB0",
-                            "text-align":"right",
-                            "borderColor": "#BDBBB0",
-                            "opacity": "unset",
-                        }
-                    ),
-                    xs=12, sm=12, md=6, lg=6, xl=6,
-                ),
-                
-            ],
-            className="g-0",
-        ),  # END OF FIRST ROW 
+        
+        dbc.Row(brand.logos),
+        
 
         # SECOND ROW 
-        dbc.Row(
-            # HORIZONTAL LINE (NEEDS CSS file in ASSETS FOLDER)
-            dbc.Col(
-                    html.Hr(
-                        style={
-                            "borderWidth": "2vh",
-                            "width": "100%",
-                            "background-color":"#353535",
-                            "borderColor": "#CDE6F5",
-                            "opacity": "unset",
-                        }
-                    ),
-                    xs=12, sm=12, md=12, lg=12, xl=12,
-                ),
-            ),
+        
         # THIRD ROW 
         dbc.Row(
             [
+                dbc.Col(html.Hr(style={"height":"10px","color":"black"}),xs=12, sm=12, md=12, lg=12, xl=12),
+                dbc.Col(html.H3("Escolher Data:"),xs=6, sm=6, md=2, lg=2, xl=2,style={"align":"right"}),
                 dbc.Col(
                     # DATE PICKER 
                     dcc.DatePickerRange(
@@ -181,9 +144,10 @@ app.layout = dbc.Container(
                         start_date=date.today(),
                         end_date=date.today()
                     ),
-                xs=12, sm=12, md=2, lg=2, xl=2,
+                xs=12, sm=12, md=6, lg=6, xl=6,
                 ),
-                html.Hr(),
+                html.Hr(style={"height":"10px","color":"black"}),
+                html.Hr(style={"height":"10px","color":"black"}),
             ],
         ),
                 # TOGGLE SWITCH FOR FIRES
@@ -208,6 +172,12 @@ app.layout = dbc.Container(
                     xs=6, sm=6, md=1, lg=1, xl=1,
 
                     ),
+                dbc.Col(
+                    html.H5(id="summary",
+                            style={"color":"white"}
+                            ),
+                xs=12, sm=12, md=9, lg=9, xl=9,
+                ), 
             ],
         ),
         dbc.Row(
@@ -237,7 +207,11 @@ app.layout = dbc.Container(
                 ],
         ),
             
-        
+        dbc.Row(
+            [
+                
+            ],
+        ),
         # FOURTH ROW 
         dbc.Row(
             [
@@ -292,7 +266,8 @@ app.layout = dbc.Container(
 # Three inputs: two from DatePicker one from Toggle Switch
 
 @app.callback(
-    
+
+    Output(component_id="summary",component_property="children"),
     Output(component_id="graph_pie",component_property="figure"),
     Output(component_id="graph_bar",component_property="figure"),
     Output(component_id="graph_line",component_property="figure"),
@@ -402,8 +377,8 @@ def new_graphs(start_date,end_date,fma_switch,fire_switch):
 
 
     # Define pie, bar, and line graphs 
-    fig_pie = px.pie(df_in_pie,names='natureza',values='sadoId',color='natureza',hole=0.5,color_discrete_sequence=colors)
-    fig_bar = px.bar(df_in_bar,x='date',y='sadoId', color='natureza',color_discrete_sequence=colors,template='plotly_dark')
+    fig_pie = px.pie(df_in_pie,names='natureza',values='sadoId',color='natureza',hole=0.5,color_discrete_sequence=colors,labels={"natureza":"TIPO","sadoId":"Ocorrências"})
+    fig_bar = px.bar(df_in_bar,x='date',y='sadoId', color='natureza',color_discrete_sequence=colors,template='plotly_dark',labels={"date":"DATA","sadoId":"Ocorrências"})
     fig_line = px.line(df_half,x='dateTime.sec',y='sadoId',color_discrete_sequence=colors,template='plotly_dark',labels={"dateTime.sec":"DATA","sadoId":"Ocorrências"})
 
     # Styling for graphs
@@ -413,13 +388,21 @@ def new_graphs(start_date,end_date,fma_switch,fire_switch):
     fig_line.update_xaxes(nticks=5)
     fig_bar.update_xaxes(nticks=5)
 
+    # Building Summary 
+
+    total_records_num  = str(len(df_in_line.sadoId))
+    text = "Total de Ocorrências no Período Escolhido: "
+    total_records = text + total_records_num
+
+
+
 
     # ------------------------------
     #        RETURN CALLBACK
     # ------------------------------
 
 
-    return fig_pie, fig_bar, fig_line
+    return total_records,fig_pie, fig_bar, fig_line
 
 
 # ------------------------------

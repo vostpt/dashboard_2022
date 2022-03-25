@@ -4,3 +4,9 @@
 ._requirements.txt
 assets/._VOSTPT_Logotype.png
 assets/._VOSTPT_Logotype_white.png
+._brand.py
+._layout.py
+__pycache__/brand.cpython-39.pyc
+__pycache__/layout.cpython-39.pyc
+assets/._dashboard_white.png
+assets/._vostportugal_white.png
