@@ -458,10 +458,6 @@ def new_graphs(start_date,end_date,fma_switch,fire_switch):
 
     em_curso = df_today_30m['status'].value_counts()
 
-    print(em_curso)
-
-    
-
 
     dispatch_val = str(em_curso['Despacho de 1º Alerta'])
     ongoing_val = str(em_curso['Em Curso'])
