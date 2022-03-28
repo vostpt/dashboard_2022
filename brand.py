@@ -32,7 +32,7 @@ PROJECT_LOGO = brand_app.get_asset_url('dashboard_white.png')
 logos = dbc.Row(
 			[
 			dbc.Col(html.Hr(style={"height":"10px","color":"black"}),xs=12, sm=12,md=12,lg=12,xl=12,),
-			dbc.Col(html.Img(src=VOSTPT_LOGO, height="50px"),xs=3, sm=3,md=3,lg=2,xl=1,),   	# VOSTPT LOGO - DO NOT REMOVE
+			dbc.Col(html.Img(src=VOSTPT_LOGO, height="50px"),xs=1, sm=1,md=1,lg=1,xl=1,),   	# VOSTPT LOGO - DO NOT REMOVE
 			dbc.Col(html.Img(src=PROJECT_LOGO, height="50px"),xs=4, sm=4,md=3,lg=2,xl=2,), 	# PROJECT LOGO
 			dbc.Col(xs=1, sm=1,md=3,lg=6,xl=6),
 			dbc.Col(html.Img(src=CONFIRM_LOGO, height="50px"),xs=4, sm=4,md=3,lg=2,xl=2,),  # CONFIRM LOGO - DO NOT REMOVE
