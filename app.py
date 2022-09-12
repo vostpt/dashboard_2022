@@ -87,6 +87,9 @@ json = response.json()
 #        DATA TREATMENT
 # ------------------------------
 
+
+# UPDATE 
+
 # Create Pandas Dataframe from the normalized json response
 # that begins at "data" level. 
 # Depending on your json file this may vary. 
