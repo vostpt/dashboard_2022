@@ -37,6 +37,18 @@ import brand
 
 
 
+#
+
+# ------------------------------
+#      START DASH APP
+# ------------------------------
+
+app = dash.Dash(
+    external_stylesheets=[dbc.themes.CYBORG],
+    title='VOSTPT:DASHBOARD',update_title=None,
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
+)
+
 # ------------------------------
 #       INITIAL VARIABLES 
 # ------------------------------
@@ -107,16 +119,6 @@ fig_line = px.line(df_in_line,x='dateTime.sec',y='sadoId', color_discrete_sequen
 
 fig_pie.update_traces(textposition='inside', textinfo='value+percent+label')
 fig_pie.update_layout(uniformtext_minsize=12, uniformtext_mode='hide',template='plotly_dark')
-
-# ------------------------------
-#      START DASH APP
-# ------------------------------
-
-app = dash.Dash(
-    external_stylesheets=[dbc.themes.CYBORG],
-    title='VOSTPT:DASHBOARD',update_title=None,
-    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-)
 
 # ------------------------------
 #      START APP LAYOUT
@@ -380,7 +382,7 @@ def new_graphs(start_date,end_date,fma_switch,fire_switch):
 
    
 
-    df_half = df_in_line.resample('15min', on='dateTime.sec', offset='01s').sadoId.count().to_frame().reset_index()
+    df_half = df_in_line.resample('30min', on='dateTime.sec', offset='01s').sadoId.count().to_frame().reset_index()
 
 
     # ------------------------------
