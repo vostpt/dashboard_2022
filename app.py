@@ -126,148 +126,136 @@ fig_pie.update_layout(uniformtext_minsize=12, uniformtext_mode='hide',template='
 # ------------------------------
 #      START APP LAYOUT
 # ------------------------------
-app.layout = dbc.Container(
-    [
+def serve_layout():
+    return dbc.Container(
+        [
         
-        dbc.Row(brand.logos),
-        
-
-        # SECOND ROW 
-        
-        # THIRD ROW 
-        dbc.Row(
-            [
-                dbc.Col(html.Hr(style={"height":"10px","color":"black"}),xs=12, sm=12, md=12, lg=12, xl=12),
-                dbc.Col(html.H3("Escolher Data:"),xs=6, sm=6, md=2, lg=2, xl=2,style={"align":"right"}),
-                dbc.Col(
-                    # DATE PICKER 
-                    dcc.DatePickerRange(
-                        id='date-picker',
-                        min_date_allowed=date(1995, 8, 5),
-                        max_date_allowed=datetime.today(),
-                        initial_visible_month=date(2022, 2, 1),
-                        display_format='D/M/Y',
-                        start_date=date.today(),
-                        end_date=date.today()
-                    ),
-                xs=12, sm=12, md=6, lg=6, xl=6,
-                ),
-                html.Hr(style={"height":"10px","color":"black"}),
-                html.Hr(style={"height":"10px","color":"black"}),
-            ],
-        ),
-                # TOGGLE SWITCH FOR FIRES
-        dbc.Row(
-            [
-                dbc.Col(
-                    
-                        html.H5("Apenas Incêndios",style={"color":"white"}),
-                    
-                xs=6, sm=6, md=2, lg=2, xl=2,
-                ),
-                dbc.Col(
-                    daq.ToggleSwitch(
-                            id='fire_switch',
-                            vertical=False,
-                            size=40,
-                            value=False,
-                            color="#F8D03D",
-                            
-                            
-                        ), 
-                    xs=6, sm=6, md=1, lg=1, xl=1,
-
-                    ),
-                dbc.Col(
-                    html.H5(id="summary",
-                            style={"color":"white"}
-                            ),
-                xs=12, sm=12, md=9, lg=9, xl=9,
-                ), 
-            ],
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                        html.Div(
-                            [
-                            html.H5("Apenas FMA",style={"color":"white"}),
-                            ],
-                            ),
-                xs=6, sm=6, md=2, lg=2, xl=2,
-                ),
-                
-                dbc.Col(
-                    daq.ToggleSwitch(
-                            id='fma_switch',
-                            vertical=False,
-                            size=40,
-                            value=False,
-                            color="#08519C",
-                            
-                            
-                        ), 
-                    xs=6, sm=6, md=1, lg=1, xl=1,
-
-                    ),
-                ],
-        ),
-            
-        dbc.Row(
-            [
-            dbc.Col(html.H5("Ocorrências últimos 30m: ",style={"color":"white"}),xs=12, sm=12, md=12, lg=12, xl=2,),
-            dbc.Col(html.H5(id='dispatch',style={"color":"yellow"}),xs=12, sm=12, md=12, lg=12, xl=2,),
-            dbc.Col(html.H5(id='arrival',style={"color":"orange"}),xs=12, sm=12, md=12, lg=12, xl=2,),
-            dbc.Col(html.H5(id='ongoing',style={"color":"red"}),xs=12, sm=12, md=12, lg=12, xl=2,),
-            dbc.Col(html.H5(id='resolution',style={"color":"green"}),xs=12, sm=12, md=12, lg=12, xl=2,),
-            dbc.Col(html.H5(id='conclusion',style={"color":"gray"}),xs=12, sm=12, md=12, lg=12, xl=2,),      
-            ],
-        ),
-        # FOURTH ROW 
-        dbc.Row(
-            [
-                
-                        dbc.Col(
-                            dcc.Loading(id='loader_pie', 
-                                type='dot',
-                                color='#FFFFFF',
-                                children=[
-                                    dcc.Graph(id="graph_pie", figure=fig_pie), # PIE CHART
-                                ],
-                            ),
-                            xs=12, sm=12, md=12, lg=12, xl=12,
-                        ),
-            ],
-        ),
-        dbc.Row(
+            dbc.Row(brand.logos),
+            dbc.Row(
                 [
-                        dbc.Col(
-                            dcc.Loading(id='loader_bar', 
-                                type='dot',
-                                color='#FFFFFF',
-                                children=[
-                                    dcc.Graph(id="graph_bar", figure=fig_bar), # BAR CHART
-                                    ],
-                            ),
-                            xs=12, sm=12, md=12, lg=12, xl=12,
-                        ), 
+                    dbc.Col(html.Hr(style={"height":"10px","color":"black"}),xs=12, sm=12, md=12, lg=12, xl=12),
+                    dbc.Col(html.H3("Escolher Data:"),xs=6, sm=6, md=2, lg=2, xl=2,style={"align":"right"}),
+                    dbc.Col(
+                        # DATE PICKER 
+                        dcc.DatePickerRange(
+                            id='date-picker',
+                            min_date_allowed=date(1995, 8, 5),
+                            max_date_allowed=datetime.today(),
+                            initial_visible_month=date(2022, 2, 1),
+                            display_format='D/M/Y',
+                            start_date=date.today(),
+                            end_date=date.today()
+                        ),
+                    xs=12, sm=12, md=6, lg=6, xl=6,
+                    ),
+                    html.Hr(style={"height":"10px","color":"black"}),
+                    html.Hr(style={"height":"10px","color":"black"}),
                 ],
-        ),
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        
+                            html.H5("Apenas Incêndios",style={"color":"white"}),
+                        
+                    xs=6, sm=6, md=2, lg=2, xl=2,
+                    ),
+                    dbc.Col(
+                        daq.ToggleSwitch(
+                                id='fire_switch',
+                                vertical=False,
+                                size=40,
+                                value=False,
+                                color="#F8D03D",
+                                
+                                
+                            ), 
+                        xs=6, sm=6, md=1, lg=1, xl=1,
+
+                        ),
+                    dbc.Col(
+                        html.H5(id="summary",
+                                style={"color":"white"}
+                                ),
+                    xs=12, sm=12, md=9, lg=9, xl=9,
+                    ), 
+                ],
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                            html.Div(
+                                [
+                                html.H5("Apenas FMA",style={"color":"white"}),
+                                ],
+                                ),
+                    xs=6, sm=6, md=2, lg=2, xl=2,
+                    ),
                     
-                
-            
-        
-        
-        # FIFTH ROW 
-        dbc.Row(
-            [
-                dbc.Col(dcc.Graph(id="graph_line", figure=fig_line),xs=12, sm=12, md=12, lg=12, xl=12) # LINE GRAPH
-            ],
-            className="g-0",
-        ),
+                    dbc.Col(
+                        daq.ToggleSwitch(
+                                id='fma_switch',
+                                vertical=False,
+                                size=40,
+                                value=False,
+                                color="#08519C",
+                                
+                                
+                            ), 
+                        xs=6, sm=6, md=1, lg=1, xl=1,
+
+                        ),
+                    ],
+            ),  
+            dbc.Row(
+                [
+                dbc.Col(html.H5("Ocorrências últimos 30m: ",style={"color":"white"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+                dbc.Col(html.H5(id='dispatch',style={"color":"yellow"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+                dbc.Col(html.H5(id='arrival',style={"color":"orange"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+                dbc.Col(html.H5(id='ongoing',style={"color":"red"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+                dbc.Col(html.H5(id='resolution',style={"color":"green"}),xs=12, sm=12, md=12, lg=12, xl=2,),
+                dbc.Col(html.H5(id='conclusion',style={"color":"gray"}),xs=12, sm=12, md=12, lg=12, xl=2,),      
+                ],
+            ),
+            dbc.Row(
+                [
+                    
+                            dbc.Col(
+                                dcc.Loading(id='loader_pie', 
+                                    type='dot',
+                                    color='#FFFFFF',
+                                    children=[
+                                        dcc.Graph(id="graph_pie", figure=fig_pie), # PIE CHART
+                                    ],
+                                ),
+                                xs=12, sm=12, md=12, lg=12, xl=12,
+                            ),
+                ],
+            ),
+            dbc.Row(
+                    [
+                            dbc.Col(
+                                dcc.Loading(id='loader_bar', 
+                                    type='dot',
+                                    color='#FFFFFF',
+                                    children=[
+                                        dcc.Graph(id="graph_bar", figure=fig_bar), # BAR CHART
+                                        ],
+                                ),
+                                xs=12, sm=12, md=12, lg=12, xl=12,
+                            ), 
+                    ],
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(dcc.Graph(id="graph_line", figure=fig_line),xs=12, sm=12, md=12, lg=12, xl=12) # LINE GRAPH
+                ],
+                className="g-0",
+            ),
     ],
 )
 
+app.layout = serve_layout 
 
 # ------------------------------
 #      START CALLBACKS
